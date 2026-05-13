@@ -12,13 +12,17 @@ const PORT = process.env.PORT || 3000
 
 app.get("/api-docs.json", (req, res) => res.json(swaggerSpec))
 app.use(
-  "/",
+  "/api-docs",
   swaggerUi.serve,
   swaggerUi.setup(swaggerSpec, {
     customSiteTitle: "Herramientas Node API - Docs",
     swaggerOptions: { persistAuthorization: true },
   })
 )
+
+app.get("/", (req, res) => {
+  res.redirect("/api-docs");
+});
 
 app.use("/api/auth", require("./routes/auth.routes"))
 app.use("/api/categorias", require("./routes/categoria.routes"))
