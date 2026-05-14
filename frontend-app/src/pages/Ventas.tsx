@@ -98,7 +98,7 @@ export default function Ventas() {
                     <Button variant="secondary" onClick={() => navigate(`/ventas/${venta.id}`)}>
                       Ver Detalle
                     </Button>
-                    <Button variant="danger" onClick={() => handleDelete(venta)}>
+                    <Button variant="destructive" onClick={() => handleDelete(venta)}>
                       Anular
                     </Button>
                   </div>

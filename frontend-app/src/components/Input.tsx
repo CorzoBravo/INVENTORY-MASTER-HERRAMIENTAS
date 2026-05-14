@@ -1,31 +1,37 @@
-import { type InputHTMLAttributes } from 'react';
+import { type InputHTMLAttributes, forwardRef } from 'react';
+import { clsx } from 'clsx';
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
 }
 
-export default function Input({ label, error, ...props }: InputProps) {
-  return (
-    <div style={{ marginBottom: '1rem' }}>
-      {label && (
-        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
-          {label}
-        </label>
-      )}
-      <input
-        style={{
-          width: '100%',
-          padding: '0.5rem',
-          border: error ? '1px solid #dc2626' : '1px solid #d1d5db',
-          borderRadius: '4px',
-          fontSize: '1rem',
-        }}
-        {...props}
-      />
-      {error && (
-        <span style={{ color: '#dc2626', fontSize: '0.875rem' }}>{error}</span>
-      )}
-    </div>
-  );
-}
+const Input = forwardRef<HTMLInputElement, InputProps>(
+  ({ className, type, error, label, ...props }, ref) => {
+    return (
+      <div className="w-full">
+        {label && (
+          <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-2 block">
+            {label}
+          </label>
+        )}
+        <input
+          type={type}
+          className={clsx(
+            'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+            error && 'border-destructive focus-visible:ring-destructive',
+            className
+          )}
+          ref={ref}
+          {...props}
+        />
+        {error && (
+          <span className="text-sm text-destructive">{error}</span>
+        )}
+      </div>
+    );
+  }
+);
+Input.displayName = 'Input';
+
+export default Input;

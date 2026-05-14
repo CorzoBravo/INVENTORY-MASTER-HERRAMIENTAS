@@ -1,7 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import { CartProvider } from './context/CartContext';
-import { useAuth } from './hooks/useAuth';
+import { useAuthStore } from './stores/authStore';
 import Home from './pages/Home';
 import Login from './components/Login';
 import Register from './components/Register';
@@ -14,12 +12,21 @@ import Carrito from './pages/Carrito';
 import Checkout from './pages/Checkout';
 import Ventas from './pages/Ventas';
 import VentaDetalle from './pages/VentaDetalle';
+import { useEffect } from 'react';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, checkAuth } = useAuthStore();
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
 
   if (isLoading) {
-    return <div>Cargando...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-lg">Cargando...</div>
+      </div>
+    );
   }
 
   if (!isAuthenticated) {
@@ -30,10 +37,14 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 function PublicRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading } = useAuthStore();
 
   if (isLoading) {
-    return <div>Cargando...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-lg">Cargando...</div>
+      </div>
+    );
   }
 
   if (isAuthenticated) {
@@ -149,11 +160,7 @@ function Router() {
 export default function AppRouter() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <CartProvider>
-          <Router />
-        </CartProvider>
-      </AuthProvider>
+      <Router />
     </BrowserRouter>
   );
 }
