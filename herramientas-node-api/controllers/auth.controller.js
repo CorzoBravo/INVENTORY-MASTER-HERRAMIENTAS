@@ -5,10 +5,10 @@ const { UnauthorizedError, ValidationError, NotFoundError } = require("../utils/
 const authController = {
   register: async (req, res, next) => {
     try {
-      const { email, password, rol = "user" } = req.body
+      const { name, email, password, rol = "user" } = req.body
 
-      if (!email || !password) {
-        throw new ValidationError("Email and password are required")
+      if (!name || !email || !password) {
+        throw new ValidationError("Name, email and password are required")
       }
 
       const existingUser = await User.findOne({ where: { email } })
@@ -16,7 +16,7 @@ const authController = {
         throw new ValidationError("Email already exists")
       }
 
-      const user = await User.create({ email, password, rol })
+      const user = await User.create({ name, email, password, rol })
       const { accessToken, refreshToken } = generateToken({
         userId: user.id,
         email: user.email,
