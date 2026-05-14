@@ -20,7 +20,7 @@ const DetalleVenta = sequelize.define('DetalleVenta', {
         allowNull: false
     }
 }, {
-    tableName: 'detalle_ventas',
+    tableName: 'detalle_venta',
     timestamps: true
 })
 
