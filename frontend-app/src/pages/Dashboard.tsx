@@ -35,15 +35,15 @@ export default function Dashboard() {
       </header>
       <main className="dashboard-content">
         <div className="dashboard-cards">
-          <div className="card">
+          <div className="card" onClick={() => navigate('/productos')}>
             <h3>Productos</h3>
             <p>Gestiona el inventario de productos</p>
           </div>
-          <div className="card">
+          <div className="card" onClick={() => navigate('/categorias')}>
             <h3>Categorías</h3>
             <p>Administra categorías de productos</p>
           </div>
-          <div className="card">
+          <div className="card" onClick={() => navigate('/clientes')}>
             <h3>Clientes</h3>
             <p>Gestiona tus clientes</p>
           </div>

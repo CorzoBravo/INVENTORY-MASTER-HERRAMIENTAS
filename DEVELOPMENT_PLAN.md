@@ -1,6 +1,6 @@
 # Desarrollo del Proyecto Inventario Maestro Herramientas
 
-## Estrategia de Ramas Git
+ ## Estrategia de Ramas Git
 
 Para evitar corromper la rama principal de producción y permitir trabajo paralelo:
 
