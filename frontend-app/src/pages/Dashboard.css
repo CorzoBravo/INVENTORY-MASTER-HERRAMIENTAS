@@ -79,3 +79,13 @@
   color: #666;
   font-size: 14px;
 }
+
+.card.card-highlight {
+  background: #eff6ff;
+  border: 2px solid #2563eb;
+}
+
+.card.card-highlight:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}

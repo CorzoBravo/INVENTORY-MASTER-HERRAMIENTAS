@@ -162,4 +162,45 @@ export const clienteService = {
   },
 };
 
+export interface DetalleVenta {
+  id: number;
+  ventaId: number;
+  productoId: number;
+  cantidad: number;
+  precioUnitario: number;
+  subtotal: number;
+  producto?: Producto;
+}
+
+export interface Venta {
+  id: number;
+  clienteId: number;
+  total: number;
+  createdAt?: string;
+  updatedAt?: string;
+  cliente?: Cliente;
+  detalles?: DetalleVenta[];
+}
+
+export const ventaService = {
+  list: async (): Promise<Venta[]> => {
+    const response = await api.get('/ventas');
+    return response.data;
+  },
+
+  getById: async (id: number): Promise<Venta> => {
+    const response = await api.get(`/ventas/${id}`);
+    return response.data;
+  },
+
+  create: async (data: { clienteId: number; detalles: { productoId: number; cantidad: number }[] }): Promise<Venta> => {
+    const response = await api.post('/ventas', data);
+    return response.data;
+  },
+
+  remove: async (id: number): Promise<void> => {
+    await api.delete(`/ventas/${id}`);
+  },
+};
+
 export default api;

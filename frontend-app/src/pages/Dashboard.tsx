@@ -1,11 +1,13 @@
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import { useCart } from '../context/CartContext';
 import './Dashboard.css';
 
 export default function Dashboard() {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const { totalItems } = useCart();
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -35,22 +37,32 @@ export default function Dashboard() {
       </header>
       <main className="dashboard-content">
         <div className="dashboard-cards">
+          <div className="card" onClick={() => navigate('/catalogo')}>
+            <h3>Nueva Venta</h3>
+            <p>Catálogo de productos</p>
+          </div>
+          <div className="card" onClick={() => navigate('/ventas')}>
+            <h3>Ventas</h3>
+            <p>Historial de ventas</p>
+          </div>
           <div className="card" onClick={() => navigate('/productos')}>
             <h3>Productos</h3>
-            <p>Gestiona el inventario de productos</p>
+            <p>Gestiona el inventario</p>
           </div>
           <div className="card" onClick={() => navigate('/categorias')}>
             <h3>Categorías</h3>
-            <p>Administra categorías de productos</p>
+            <p>Administra categorías</p>
           </div>
           <div className="card" onClick={() => navigate('/clientes')}>
             <h3>Clientes</h3>
             <p>Gestiona tus clientes</p>
           </div>
-          <div className="card">
-            <h3>Ventas</h3>
-            <p>Registro y seguimiento de ventas</p>
-          </div>
+          {totalItems > 0 && (
+            <div className="card card-highlight" onClick={() => navigate('/carrito')}>
+              <h3>Carrito</h3>
+              <p>{totalItems} producto(s) en el carrito</p>
+            </div>
+          )}
         </div>
       </main>
     </div>
