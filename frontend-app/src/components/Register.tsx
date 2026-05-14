@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import './Register.css';
+import Input from './Input';
+import Button from './Button';
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -38,63 +39,69 @@ export default function Register() {
   };
 
   return (
-    <div className="register-container">
-      <div className="register-card">
-        <h2>Crear Cuenta</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="name">Nombre completo</label>
-            <input
-              type="text"
-              id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              placeholder="Juan Pérez"
-            />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 px-4 py-8">
+      <div className="w-full max-w-md">
+        <div className="bg-card rounded-lg shadow-lg p-8">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold">Crear Cuenta</h2>
+            <p className="text-muted-foreground mt-2">Regístrate para comenzar</p>
           </div>
-          <div className="form-group">
-            <label htmlFor="email">Correo electrónico</label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              placeholder="tu@email.com"
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Contraseña</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              placeholder="••••••••"
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="confirmPassword">Confirmar contraseña</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              placeholder="••••••••"
-            />
-          </div>
-          {error && <div className="error-message">{error}</div>}
-          {success && <div className="success-message">¡Registro exitoso! Redirigiendo...</div>}
-          <button type="submit" className="btn-primary">
-            Registrarse
-          </button>
-        </form>
-        <p className="login-link">
-          ¿Ya tienes cuenta? <a href="/login">Inicia sesión</a>
-        </p>
+          <form onSubmit={handleSubmit}>
+            <div className="space-y-4">
+              <Input
+                label="Nombre completo"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                placeholder="Juan Pérez"
+              />
+              <Input
+                label="Correo electrónico"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="tu@email.com"
+              />
+              <Input
+                label="Contraseña"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="••••••••"
+              />
+              <Input
+                label="Confirmar contraseña"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                placeholder="••••••••"
+              />
+            </div>
+            {error && (
+              <div className="mt-4 p-3 bg-destructive/10 text-destructive text-sm rounded-md">
+                {error}
+              </div>
+            )}
+            {success && (
+              <div className="mt-4 p-3 bg-green-100 text-green-800 text-sm rounded-md">
+                ¡Registro exitoso! Redirigiendo...
+              </div>
+            )}
+            <Button type="submit" className="w-full mt-6">
+              Registrarse
+            </Button>
+          </form>
+          <p className="text-center text-sm text-muted-foreground mt-6">
+            ¿Ya tienes cuenta?{' '}
+            <Link to="/login" className="text-primary hover:underline font-medium">
+              Inicia sesión
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import './Login.css';
+import Input from './Input';
+import Button from './Button';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -22,40 +23,48 @@ export default function Login() {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-card">
-        <h2>Iniciar Sesión</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="email">Correo electrónico</label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              placeholder="tu@email.com"
-            />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 px-4">
+      <div className="w-full max-w-md">
+        <div className="bg-card rounded-lg shadow-lg p-8">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold">Iniciar Sesión</h2>
+            <p className="text-muted-foreground mt-2">Ingresa tus credenciales para continuar</p>
           </div>
-          <div className="form-group">
-            <label htmlFor="password">Contraseña</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              placeholder="••••••••"
-            />
-          </div>
-          {error && <div className="error-message">{error}</div>}
-          <button type="submit" className="btn-primary">
-            Iniciar Sesión
-          </button>
-        </form>
-        <p className="register-link">
-          ¿No tienes cuenta? <a href="/register">Regístrate</a>
-        </p>
+          <form onSubmit={handleSubmit}>
+            <div className="space-y-4">
+              <Input
+                label="Correo electrónico"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="tu@email.com"
+              />
+              <Input
+                label="Contraseña"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="••••••••"
+              />
+            </div>
+            {error && (
+              <div className="mt-4 p-3 bg-destructive/10 text-destructive text-sm rounded-md">
+                {error}
+              </div>
+            )}
+            <Button type="submit" className="w-full mt-6">
+              Iniciar Sesión
+            </Button>
+          </form>
+          <p className="text-center text-sm text-muted-foreground mt-6">
+            ¿No tienes cuenta?{' '}
+            <Link to="/register" className="text-primary hover:underline font-medium">
+              Regístrate
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

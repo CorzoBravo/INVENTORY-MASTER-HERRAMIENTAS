@@ -12,14 +12,10 @@ import Carrito from './pages/Carrito';
 import Checkout from './pages/Checkout';
 import Ventas from './pages/Ventas';
 import VentaDetalle from './pages/VentaDetalle';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading, checkAuth } = useAuthStore();
-
-  useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
+  const { isAuthenticated, isLoading } = useAuthStore();
 
   if (isLoading) {
     return (
@@ -50,6 +46,20 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
   if (isAuthenticated) {
     return <Navigate to="/dashboard" replace />;
   }
+
+  return <>{children}</>;
+}
+
+function AuthInitializer({ children }: { children: React.ReactNode }) {
+  const initialized = useRef(false);
+  const checkAuth = useAuthStore((state) => state.checkAuth);
+
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true;
+      checkAuth();
+    }
+  }, [checkAuth]);
 
   return <>{children}</>;
 }
@@ -160,7 +170,9 @@ function Router() {
 export default function AppRouter() {
   return (
     <BrowserRouter>
-      <Router />
+      <AuthInitializer>
+        <Router />
+      </AuthInitializer>
     </BrowserRouter>
   );
 }
