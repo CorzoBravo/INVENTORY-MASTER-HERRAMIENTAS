@@ -1,43 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { productoService, categoriaService, type Producto, type Categoria } from '../services/api';
-import { useCart } from '../context/CartContext';
+import { useProductos } from '../hooks/useProductos';
+import { useCategorias } from '../hooks/useCategorias';
+import { useCart } from '../hooks/useCart';
 import Button from '../components/Button';
+import { type Producto } from '../services/api';
 
 export default function Catalogo() {
   const navigate = useNavigate();
+  const { data: productos = [], isLoading: loadingProductos, error: errorProductos } = useProductos();
+  const { data: categorias = [] } = useCategorias();
   const { addItem } = useCart();
-  const [productos, setProductos] = useState<Producto[]>([]);
-  const [categorias, setCategorias] = useState<Categoria[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+
   const [search, setSearch] = useState('');
   const [categoriaId, setCategoriaId] = useState('');
-  const [showCart, setShowCart] = useState(false);
 
-  useEffect(() => {
-    let cancelled = false;
-    async function load() {
-      try {
-        const [productosData, categoriasData] = await Promise.all([
-          productoService.list(),
-          categoriaService.list(),
-        ]);
-        if (!cancelled) {
-          setProductos(productosData);
-          setCategorias(categoriasData);
-        }
-      } catch {
-        if (!cancelled) setError('Error al cargar productos');
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-    load();
-    return () => { cancelled = true; };
-  }, []);
-
-  const productosFiltrados = productos.filter((p) => {
+  const productosFiltrados = productos.filter((p: Producto) => {
     const matchesSearch = p.nombre.toLowerCase().includes(search.toLowerCase()) ||
       p.descripcion?.toLowerCase().includes(search.toLowerCase());
     const matchesCategoria = !categoriaId || p.categoriaId === parseInt(categoriaId);
@@ -48,29 +26,29 @@ export default function Catalogo() {
     addItem(producto, 1);
   };
 
-  if (loading) return <div className="catalogo-loading">Cargando...</div>;
+  if (loadingProductos) return <div className="flex items-center justify-center p-8">Cargando...</div>;
 
   return (
-    <div className="catalogo-container">
-      <div className="catalogo-header">
-        <h1>Catálogo de Productos</h1>
+    <div className="catalogo-container p-4">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Catálogo de Productos</h1>
         <Button onClick={() => navigate('/dashboard')}>Volver</Button>
       </div>
 
-      {error && <div className="catalogo-error">{error}</div>}
+      {errorProductos && <div className="text-destructive mb-4">{String(errorProductos)}</div>}
 
-      <div className="catalogo-filters">
+      <div className="flex gap-4 mb-4">
         <input
           type="text"
           placeholder="Buscar productos..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="catalogo-search"
+          className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
         />
         <select
           value={categoriaId}
           onChange={(e) => setCategoriaId(e.target.value)}
-          className="catalogo-select"
+          className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
         >
           <option value="">Todas las categorías</option>
           {categorias.map((cat) => (
@@ -79,21 +57,23 @@ export default function Catalogo() {
         </select>
       </div>
 
-      <div className="catalogo-grid">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {productosFiltrados.map((producto) => (
-          <div key={producto.id} className="producto-card">
-            <div className="producto-info">
-              <h3>{producto.nombre}</h3>
-              <p className="producto-desc">{producto.descripcion || 'Sin descripción'}</p>
-              <p className="producto-categoria">
-                {producto.categoria?.nombre || 'Sin categoría'}
-              </p>
-              <div className="producto-details">
-                <span className="producto-precio">${producto.precio.toFixed(2)}</span>
-                <span className="producto-stock">Stock: {producto.stock}</span>
-              </div>
+          <div key={producto.id} className="border rounded-lg p-4">
+            <div className="mb-2">
+              <h3 className="font-semibold">{producto.nombre}</h3>
+              <p className="text-sm text-muted-foreground">{producto.descripcion || 'Sin descripción'}</p>
+              <p className="text-sm text-muted-foreground">{producto.categoria?.nombre || 'Sin categoría'}</p>
             </div>
-            <Button onClick={() => handleAddToCart(producto)} disabled={producto.stock === 0}>
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-lg font-bold">${producto.precio.toFixed(2)}</span>
+              <span className="text-sm text-muted-foreground">Stock: {producto.stock}</span>
+            </div>
+            <Button 
+              onClick={() => handleAddToCart(producto)} 
+              disabled={producto.stock === 0}
+              className="w-full"
+            >
               {producto.stock === 0 ? 'Sin stock' : 'Agregar al carrito'}
             </Button>
           </div>
@@ -101,12 +81,8 @@ export default function Catalogo() {
       </div>
 
       {productosFiltrados.length === 0 && (
-        <div className="catalogo-empty">No se encontraron productos</div>
+        <div className="text-center py-8 text-muted-foreground">No se encontraron productos</div>
       )}
-
-      <button className="cart-float" onClick={() => setShowCart(!showCart)}>
-        🛒 Carrito
-      </button>
     </div>
   );
 }

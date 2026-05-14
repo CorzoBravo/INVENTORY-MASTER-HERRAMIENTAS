@@ -1,17 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Table from '../components/Table';
 import Modal from '../components/Modal';
 import Input from '../components/Input';
 import Button from '../components/Button';
-import { productoService, categoriaService, type Producto, type Categoria } from '../services/api';
+import { useProductos, useCreateProducto, useUpdateProducto, useDeleteProducto } from '../hooks/useProductos';
+import { useCategorias } from '../hooks/useCategorias';
+import { type Producto } from '../services/api';
 
 export default function Productos() {
   const navigate = useNavigate();
-  const [productos, setProductos] = useState<Producto[]>([]);
-  const [categorias, setCategorias] = useState<Categoria[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const { data: productos = [], isLoading, error } = useProductos();
+  const { data: categorias = [] } = useCategorias();
+  const createMutation = useCreateProducto();
+  const updateMutation = useUpdateProducto();
+  const deleteMutation = useDeleteProducto();
+
   const [modalOpen, setModalOpen] = useState(false);
   const [editingProducto, setEditingProducto] = useState<Producto | null>(null);
   const [formData, setFormData] = useState({
@@ -21,28 +25,6 @@ export default function Productos() {
     stock: '',
     categoriaId: '',
   });
-
-  useEffect(() => {
-    let cancelled = false;
-    async function load() {
-      try {
-        const [productosData, categoriasData] = await Promise.all([
-          productoService.list(),
-          categoriaService.list(),
-        ]);
-        if (!cancelled) {
-          setProductos(productosData);
-          setCategorias(categoriasData);
-        }
-      } catch {
-        if (!cancelled) setError('Error al cargar datos');
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-    load();
-    return () => { cancelled = true; };
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,17 +38,15 @@ export default function Productos() {
       };
 
       if (editingProducto) {
-        await productoService.update(editingProducto.id, data);
+        await updateMutation.mutateAsync({ id: editingProducto.id, data });
       } else {
-        await productoService.create(data);
+        await createMutation.mutateAsync(data);
       }
       setModalOpen(false);
       setEditingProducto(null);
       setFormData({ nombre: '', descripcion: '', precio: '', stock: '', categoriaId: '' });
-      const [productosData] = await Promise.all([productoService.list(), categoriaService.list()]);
-      setProductos(productosData);
     } catch {
-      setError(editingProducto ? 'Error al actualizar' : 'Error al crear');
+      console.error('Error saving producto');
     }
   };
 
@@ -85,11 +65,9 @@ export default function Productos() {
   const handleDelete = async (producto: Producto) => {
     if (confirm(`¿Eliminar producto "${producto.nombre}"?`)) {
       try {
-        await productoService.remove(producto.id);
-        const [productosData] = await Promise.all([productoService.list(), categoriaService.list()]);
-        setProductos(productosData);
+        await deleteMutation.mutateAsync(producto.id);
       } catch {
-        setError('Error al eliminar');
+        console.error('Error deleting producto');
       }
     }
   };
@@ -100,18 +78,18 @@ export default function Productos() {
     setModalOpen(true);
   };
 
-  if (loading) return <div>Cargando...</div>;
+  if (isLoading) return <div className="flex items-center justify-center p-8">Cargando...</div>;
 
   return (
-    <div style={{ padding: '1rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-        <h1>Productos</h1>
+    <div className="p-4">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Productos</h1>
         <Button onClick={() => navigate('/dashboard')}>Volver</Button>
       </div>
 
-      {error && <div style={{ color: '#dc2626', marginBottom: '1rem' }}>{error}</div>}
+      {error && <div className="text-destructive mb-4">{String(error)}</div>}
 
-      <Button onClick={openNewModal} style={{ marginBottom: '1rem' }}>Nuevo Producto</Button>
+      <Button onClick={openNewModal} className="mb-4">Nuevo Producto</Button>
 
       <Table
         data={productos}
@@ -154,10 +132,10 @@ export default function Productos() {
             value={formData.stock}
             onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
           />
-          <div style={{ marginBottom: '1rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Categoría</label>
+          <div className="mb-4">
+            <label className="text-sm font-medium mb-2 block">Categoría</label>
             <select
-              style={{ width: '100%', padding: '0.5rem', border: '1px solid #d1d5db', borderRadius: '4px', fontSize: '1rem' }}
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               value={formData.categoriaId}
               onChange={(e) => setFormData({ ...formData, categoriaId: e.target.value })}
             >
@@ -167,8 +145,10 @@ export default function Productos() {
               ))}
             </select>
           </div>
-          <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
-            <Button type="submit">{editingProducto ? 'Actualizar' : 'Crear'}</Button>
+          <div className="flex gap-2 mt-4">
+            <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending}>
+              {editingProducto ? 'Actualizar' : 'Crear'}
+            </Button>
             <Button type="button" variant="secondary" onClick={() => setModalOpen(false)}>Cancelar</Button>
           </div>
         </form>

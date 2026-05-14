@@ -1,31 +1,11 @@
-import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ventaService, type Venta } from '../services/api';
+import { useVentas, useDeleteVenta } from '../hooks/useVentas';
 import Button from '../components/Button';
 
 export default function Ventas() {
   const navigate = useNavigate();
-  const [ventas, setVentas] = useState<Venta[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    let cancelled = false;
-    async function load() {
-      try {
-        const ventasData = await ventaService.list();
-        if (!cancelled) {
-          setVentas(ventasData);
-        }
-      } catch {
-        if (!cancelled) setError('Error al cargar ventas');
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-    load();
-    return () => { cancelled = true; };
-  }, []);
+  const { data: ventas = [], isLoading, error } = useVentas();
+  const deleteMutation = useDeleteVenta();
 
   const formatDate = (dateStr?: string) => {
     if (!dateStr) return '-';
@@ -38,67 +18,65 @@ export default function Ventas() {
     });
   };
 
-  const handleDelete = async (venta: Venta) => {
+  const handleDelete = async (venta: typeof ventas[0]) => {
     if (confirm(`¿Anular la venta #${venta.id}? Esto restaurará el stock.`)) {
       try {
-        await ventaService.remove(venta.id);
-        const ventasData = await ventaService.list();
-        setVentas(ventasData);
+        await deleteMutation.mutateAsync(venta.id);
       } catch {
-        setError('Error al anular la venta');
+        console.error('Error al anular la venta');
       }
     }
   };
 
-  if (loading) return <div>Cargando...</div>;
+  if (isLoading) return <div className="flex items-center justify-center p-8">Cargando...</div>;
 
   return (
-    <div className="ventas-container">
-      <div className="ventas-header">
-        <h1>Historial de Ventas</h1>
-        <div className="ventas-actions">
+    <div className="ventas-container p-4">
+      <div className="ventas-header flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Historial de Ventas</h1>
+        <div className="flex gap-2">
           <Button onClick={() => navigate('/catalogo')}>Nueva Venta</Button>
           <Button variant="secondary" onClick={() => navigate('/dashboard')}>Volver</Button>
         </div>
       </div>
 
-      {error && <div className="ventas-error">{error}</div>}
+      {error && <div className="text-destructive mb-4">{String(error)}</div>}
 
-      <div className="ventas-table-container">
-        <table className="ventas-table">
+      <div className="ventas-table-container overflow-x-auto">
+        <table className="w-full border-collapse">
           <thead>
-            <tr>
-              <th>ID</th>
-              <th>Fecha</th>
-              <th>Cliente</th>
-              <th>Total</th>
-              <th>Acciones</th>
+            <tr className="border-b">
+              <th className="p-2 text-left">ID</th>
+              <th className="p-2 text-left">Fecha</th>
+              <th className="p-2 text-left">Cliente</th>
+              <th className="p-2 text-left">Total</th>
+              <th className="p-2 text-left">Acciones</th>
             </tr>
           </thead>
           <tbody>
             {ventas.map((venta) => (
-              <tr key={venta.id}>
-                <td>#{venta.id}</td>
-                <td>{formatDate(venta.createdAt)}</td>
-                <td>
+              <tr key={venta.id} className="border-b hover:bg-muted/50">
+                <td className="p-2">#{venta.id}</td>
+                <td className="p-2">{formatDate(venta.createdAt)}</td>
+                <td className="p-2">
                   {venta.cliente ? (
-                    <div className="venta-cliente">
-                      <span className="cliente-nombre">
+                    <div>
+                      <span className="font-medium">
                         {venta.cliente.nombres} {venta.cliente.apellidos}
                       </span>
-                      <span className="cliente-id">{venta.cliente.identificacion}</span>
+                      <span className="text-muted-foreground text-sm ml-2">({venta.cliente.identificacion})</span>
                     </div>
                   ) : (
                     '-'
                   )}
                 </td>
-                <td className="venta-total">${venta.total.toFixed(2)}</td>
-                <td>
-                  <div className="venta-actions">
-                    <Button variant="secondary" onClick={() => navigate(`/ventas/${venta.id}`)}>
+                <td className="p-2 font-medium">${venta.total.toFixed(2)}</td>
+                <td className="p-2">
+                  <div className="flex gap-2">
+                    <Button variant="secondary" size="sm" onClick={() => navigate(`/ventas/${venta.id}`)}>
                       Ver Detalle
                     </Button>
-                    <Button variant="destructive" onClick={() => handleDelete(venta)}>
+                    <Button variant="destructive" size="sm" onClick={() => handleDelete(venta)}>
                       Anular
                     </Button>
                   </div>
@@ -110,8 +88,8 @@ export default function Ventas() {
       </div>
 
       {ventas.length === 0 && (
-        <div className="ventas-empty">
-          <p>No hay ventas registradas</p>
+        <div className="text-center py-8">
+          <p className="text-muted-foreground mb-4">No hay ventas registradas</p>
           <Button onClick={() => navigate('/catalogo')}>Realizar Primera Venta</Button>
         </div>
       )}
