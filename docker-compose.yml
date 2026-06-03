@@ -3,8 +3,7 @@ version: '3.8'
 services:
   backend:
     build: ./herramientas-node-api
-    ports:
-      - "3000:3000"
+    
     environment:
       - PORT=3000
       - DB_HOST=db
@@ -21,16 +20,14 @@ services:
 
   frontend:
     build: ./frontend-app
-    ports:
-      - "80:80"
+   
     environment:
       - VITE_API_URL=http://backend:3000/api
     restart: unless-stopped
 
   db:
     image: postgres:15-alpine
-    ports:
-      - "5432:5432"
+   
     environment:
       - POSTGRES_DB=tienda
       - POSTGRES_USER=user
