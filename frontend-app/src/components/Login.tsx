@@ -54,7 +54,7 @@ export default function Login() {
     setLoading(true);
     try {
       await login(email, password);
-      navigate('/dashboard');
+      navigate('/admin');
     } catch {
       setError('Credenciales inválidas. Por favor intenta de nuevo.');
     } finally {

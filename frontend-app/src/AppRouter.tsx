@@ -44,7 +44,7 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
   }
 
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/admin" replace />;
   }
 
   return <>{children}</>;
@@ -92,7 +92,7 @@ function Router() {
         }
       />
       <Route
-        path="/dashboard"
+        path="/admin"
         element={
           <ProtectedRoute>
             <Dashboard />
@@ -100,7 +100,7 @@ function Router() {
         }
       />
       <Route
-        path="/categorias"
+        path="/admin/categorias"
         element={
           <ProtectedRoute>
             <Categorias />
@@ -108,7 +108,7 @@ function Router() {
         }
       />
       <Route
-        path="/productos"
+        path="/admin/productos"
         element={
           <ProtectedRoute>
             <Productos />
@@ -116,7 +116,7 @@ function Router() {
         }
       />
       <Route
-        path="/clientes"
+        path="/admin/clientes"
         element={
           <ProtectedRoute>
             <Clientes />
@@ -148,7 +148,7 @@ function Router() {
         }
       />
       <Route
-        path="/ventas"
+        path="/admin/ventas"
         element={
           <ProtectedRoute>
             <Ventas />
@@ -156,7 +156,7 @@ function Router() {
         }
       />
       <Route
-        path="/ventas/:id"
+        path="/admin/ventas/:id"
         element={
           <ProtectedRoute>
             <VentaDetalle />

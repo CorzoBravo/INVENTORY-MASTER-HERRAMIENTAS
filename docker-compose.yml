@@ -9,22 +9,16 @@ services:
       - DB_PORT=5432
       - DB_NAME=tienda
       - DB_USER=user
-      - DB_PASSWORD=password
+      - DB_PASSWORD=${DB_PASSWORD}
       - DB_SYNC_ALTER=false
-      - JWT_SECRET=cambiar-por-un-secreto-seguro
+      - JWT_SECRET=${JWT_SECRET}
       - NODE_ENV=production
     depends_on:
       - db
     restart: unless-stopped
-  
-    labels:
-      - "coolify.managed=true"
-      - "coolify.port=3000"
 
   frontend:
     build: ./frontend-app
-    environment:
-      - VITE_API_URL=http://100.79.1.68:3000/api
     restart: unless-stopped
     labels:
       - "coolify.managed=true"
@@ -35,7 +29,7 @@ services:
     environment:
       - POSTGRES_DB=tienda
       - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
