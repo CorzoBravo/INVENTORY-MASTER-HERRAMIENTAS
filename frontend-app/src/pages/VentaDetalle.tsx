@@ -47,7 +47,7 @@ export default function VentaDetalle() {
       <div className="detalle-container">
         <div className="detalle-header">
           <h1>Detalle de Venta</h1>
-          <Button onClick={() => navigate('/ventas')}>Volver</Button>
+          <Button onClick={() => navigate('/admin/ventas')}>Volver</Button>
         </div>
         <div className="detalle-error">{error || 'Venta no encontrada'}</div>
       </div>
@@ -58,7 +58,7 @@ export default function VentaDetalle() {
     <div className="detalle-container">
       <div className="detalle-header">
         <h1>Detalle de Venta #{venta.id}</h1>
-        <Button onClick={() => navigate('/ventas')}>Volver</Button>
+        <Button onClick={() => navigate('/admin/ventas')}>Volver</Button>
       </div>
 
       <div className="detalle-info">

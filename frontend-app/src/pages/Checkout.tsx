@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
+import { useCart } from '../hooks/useCart';
 import { clienteService, ventaService, type Cliente } from '../services/api';
 import Button from '../components/Button';
 
@@ -72,7 +72,7 @@ export default function Checkout() {
 
       await ventaService.create({ clienteId, detalles });
       clearCart();
-      navigate('/ventas');
+      navigate('/admin/ventas');
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Error al procesar la venta';
       setError(message);
