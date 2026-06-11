@@ -84,7 +84,7 @@ export default function Productos() {
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Productos</h1>
-        <Button onClick={() => navigate('/dashboard')}>Volver</Button>
+        <Button onClick={() => navigate('/admin')}>Volver</Button>
       </div>
 
       {error && <div className="text-destructive mb-4">{String(error)}</div>}

@@ -29,10 +29,10 @@ export default function Dashboard() {
 
   const menuItems = [
     { title: 'Nueva Venta', description: 'Catálogo de productos', icon: ShoppingBag, path: '/catalogo', color: 'from-blue-500 to-blue-600' },
-    { title: 'Ventas', description: 'Historial de ventas', icon: TrendingUp, path: '/ventas', color: 'from-green-500 to-green-600' },
-    { title: 'Productos', description: 'Gestiona el inventario', icon: Package, path: '/productos', color: 'from-purple-500 to-purple-600' },
-    { title: 'Categorías', description: 'Administra categorías', icon: Tags, path: '/categorias', color: 'from-orange-500 to-orange-600' },
-    { title: 'Clientes', description: 'Gestiona tus clientes', icon: Users, path: '/clientes', color: 'from-cyan-500 to-cyan-600' },
+    { title: 'Ventas', description: 'Historial de ventas', icon: TrendingUp, path: '/admin/ventas', color: 'from-green-500 to-green-600' },
+    { title: 'Productos', description: 'Gestiona el inventario', icon: Package, path: '/admin/productos', color: 'from-purple-500 to-purple-600' },
+    { title: 'Categorías', description: 'Administra categorías', icon: Tags, path: '/admin/categorias', color: 'from-orange-500 to-orange-600' },
+    { title: 'Clientes', description: 'Gestiona tus clientes', icon: Users, path: '/admin/clientes', color: 'from-cyan-500 to-cyan-600' },
     ...(totalItems > 0 ? [{ title: 'Carrito', description: `${totalItems} producto(s)`, icon: ShoppingCart, path: '/carrito', color: 'from-indigo-500 to-indigo-600', highlight: true }] : []),
   ];
 
