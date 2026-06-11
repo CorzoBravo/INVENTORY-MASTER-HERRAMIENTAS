@@ -31,8 +31,8 @@ services:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data_v2:/var/lib/postgresql/data
     restart: unless-stopped
 
 volumes:
-  postgres_data:
+  postgres_data_v2:
