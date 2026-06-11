@@ -36,7 +36,7 @@ export default function Ventas() {
         <h1 className="text-2xl font-bold">Historial de Ventas</h1>
         <div className="flex gap-2">
           <Button onClick={() => navigate('/catalogo')}>Nueva Venta</Button>
-          <Button variant="secondary" onClick={() => navigate('/dashboard')}>Volver</Button>
+          <Button variant="secondary" onClick={() => navigate('/admin')}>Volver</Button>
         </div>
       </div>
 
@@ -73,7 +73,7 @@ export default function Ventas() {
                 <td className="p-2 font-medium">${venta.total.toFixed(2)}</td>
                 <td className="p-2">
                   <div className="flex gap-2">
-                    <Button variant="secondary" size="sm" onClick={() => navigate(`/ventas/${venta.id}`)}>
+                    <Button variant="secondary" size="sm" onClick={() => navigate(`/admin/ventas/${venta.id}`)}>
                       Ver Detalle
                     </Button>
                     <Button variant="destructive" size="sm" onClick={() => handleDelete(venta)}>
