@@ -9,9 +9,9 @@ services:
       - DB_PORT=5432
       - DB_NAME=tienda
       - DB_USER=user
-      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_PASSWORD=${DB_PASSWORD:-tiendapassword}
       - DB_SYNC_ALTER=false
-      - JWT_SECRET=${JWT_SECRET}
+      - JWT_SECRET=${JWT_SECRET:-change_this_jwt_secret_in_production}
       - NODE_ENV=production
     depends_on:
       - db
@@ -29,7 +29,7 @@ services:
     environment:
       - POSTGRES_DB=tienda
       - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-tiendapassword}
     ports:
       - "5438:5432"
     volumes:
