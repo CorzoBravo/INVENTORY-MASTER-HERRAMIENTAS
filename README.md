@@ -2,7 +2,7 @@
 
 Un sistema completo de gestión de inventario, clientes y ventas, construido con React (Frontend) y Node.js + Express + PostgreSQL (Backend).
 
-## 🚀 Requisitos Previos
+##  Requisitos Previos
 
 Asegúrate de tener instalado en tu computadora:
 - [Node.js](https://nodejs.org/) (Versión 18 o superior recomendada)
@@ -11,7 +11,7 @@ Asegúrate de tener instalado en tu computadora:
 
 ---
 
-## 🛠️ Configuración Inicial
+##  Configuración Inicial
 
 Antes de arrancar el proyecto, debes configurar las variables de entorno en ambas carpetas.
 
@@ -31,7 +31,7 @@ Antes de arrancar el proyecto, debes configurar las variables de entorno en amba
 
 ---
 
-## 🏃 Opción A: Ejecución Rápida con Docker Compose (Full Stack)
+##  Opción A: Ejecución Rápida con Docker Compose (Full Stack)
 
 Si tienes Docker instalado, puedes levantar todo el sistema (Base de Datos + Backend + Frontend en Nginx) con un solo comando. Esta opción simula el entorno de producción.
 
@@ -48,7 +48,7 @@ Si tienes Docker instalado, puedes levantar todo el sistema (Base de Datos + Bac
 
 ---
 
-## 💻 Opción B: Ejecución Local para Desarrollo
+##  Opción B: Ejecución Local para Desarrollo
 
 Esta es la mejor opción si planeas **modificar el código** y ver los cambios en tiempo real.
 
